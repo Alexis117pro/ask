@@ -7,7 +7,6 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
     <style>
-
         /* ====== FONDO PROGRAMADO CON CORAZONES ====== */
         #hearts-bg {
             position: fixed;
@@ -147,7 +146,6 @@
             background-color: #b71c1c;
         }
 
-
         /* ====== RESPONSIVE ====== */
 
         @media (max-width: 480px) {
@@ -211,7 +209,6 @@
                 font-size: 24px;
             }
         }
-
     </style>
 </head>
 <body>
@@ -231,7 +228,8 @@
 
 <!-- Botones -->
 <input type="button" onclick="accionSi()" id="btnSi" value="Sí">
-<input type="button" id="btnNo" onmouseover="mueveElBoton()" value="No">
+<!-- OJO: ya sin onmouseover, lo manejamos por JS -->
+<input type="button" id="btnNo" value="No">
 
 <!-- Audios -->
 <audio id="clicSound" src="clic.mp3"></audio>
@@ -247,9 +245,7 @@
     </div>
 </div>
 
-
 <script>
-
 /* ====== CORAZONES ====== */
 function generarCorazones() {
     const contenedor = document.getElementById("hearts-bg");
@@ -285,6 +281,7 @@ function cerrarModal(){
 /* Botón NO - movimiento */
 function mueveElBoton(){
     const sound = document.getElementById('moverSound');
+    // SOLO sonido de movimiento
     sound.pause();
     sound.currentTime = 0;
     sound.play().catch(()=>{});
@@ -321,22 +318,31 @@ function mueveElBoton(){
         if (!overlapping) safe = true;
     }
 
+    // Quitamos el transform inicial para que las coordenadas sean reales
+    btnNo.style.transform = 'none';
     btnNo.style.left = newX + "px";
     btnNo.style.top = newY + "px";
 }
 
-/* DESBLOQUEO DE AUDIO */
-document.addEventListener("click", function unlockAudio() {
-    const audios = document.querySelectorAll("audio");
-    audios.forEach(a => {
-        a.play().then(() => {
-            a.pause();
-            a.currentTime = 0;
-        }).catch(() => {});
-    });
-    document.removeEventListener("click", unlockAudio);
+/* EVENTOS DEL BOTÓN NO (desktop + teléfono) */
+const btnNo = document.getElementById('btnNo');
+
+// Desktop: se mueve al pasar el mouse
+btnNo.addEventListener('mouseover', () => {
+    mueveElBoton();
 });
 
+// Móvil: se mueve en cada toque sin necesidad de tocar fuera
+btnNo.addEventListener('touchstart', function(e) {
+    e.preventDefault(); // evita que dispare también el click
+    mueveElBoton();
+}, { passive: false });
+
+// Por si acaso, también en click (desktop / algunos navegadores)
+btnNo.addEventListener('click', function(e) {
+    e.preventDefault();
+    mueveElBoton();
+});
 </script>
 
 </body>
