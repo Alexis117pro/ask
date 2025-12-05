@@ -1,0 +1,343 @@
+<!DOCTYPE html> 
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Preguntita</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <style>
+
+        /* ====== FONDO PROGRAMADO CON CORAZONES ====== */
+        #hearts-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 28px;
+            color: rgba(255, 80, 80, 0.55);
+            animation: temblor 3s infinite ease-in-out;
+            user-select: none;
+        }
+
+        @keyframes temblor {
+            0%   { transform: translate(0px, 0px) scale(1); }
+            25%  { transform: translate(2px, -2px) scale(1.02); }
+            50%  { transform: translate(-2px, 2px) scale(0.98); }
+            75%  { transform: translate(1px, -1px) scale(1.01); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        /* ====== GENERAL ====== */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* ====== HEADER COMPATIBLE CON DYNAMIC ISLAND ====== */
+        header {
+            background-color: #d62828;
+            color: white;
+
+            padding: calc(35px + env(safe-area-inset-top)) 25px 35px 25px;
+            padding-top: calc(35px + constant(safe-area-inset-top));
+
+            font-size: 22px;
+            font-weight: bold;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+
+        .contenido {
+            margin-top: 160px;
+        }
+
+        /* ====== IMAGEN ====== */
+        img {
+            display: block;
+            margin: 60px auto 20px auto;
+            width: 300px;
+            animation: flotar 3s ease-in-out infinite;
+        }
+
+        @keyframes flotar {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* ====== BOTONES ROJOS ====== */
+
+        #btnSi, #btnNo {
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #d62828;
+            color: white;
+            transition: 0.3s;
+            position: fixed;
+            top: 220px;
+            z-index: 20;
+        }
+
+        #btnSi:hover, #btnNo:hover {
+            background-color: #b71c1c;
+        }
+
+        #btnSi {
+            left: 50%;
+            transform: translateX(-160px);
+        }
+
+        #btnNo {
+            left: 50%;
+            transform: translateX(60px);
+        }
+
+        /* ====== MODAL ====== */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            width: 80%;
+            max-width: 350px;
+            border-radius: 20px;
+            text-align: center;
+            animation: pop 0.4s ease;
+            position: relative;
+            z-index: 10000;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #btnCerrarModal {
+            background-color: #d62828;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            margin-top: 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        #btnCerrarModal:hover {
+            background-color: #b71c1c;
+        }
+
+
+        /* ====== RESPONSIVE ====== */
+
+        @media (max-width: 480px) {
+
+            header {
+                font-size: 18px;
+                padding-bottom: 28px;
+            }
+
+            img {
+                width: 260px;
+                margin-top: 40px; 
+            }
+
+            #btnSi {
+                transform: translateX(-120px);
+                top: 190px;
+                padding: 12px 22px;
+                font-size: 16px;
+            }
+
+            #btnNo {
+                transform: translateX(50px);
+                top: 190px;
+                padding: 12px 22px;
+                font-size: 16px;
+            }
+
+            .contenido {
+                margin-top: 140px;
+            }
+
+            .heart {
+                font-size: 20px;
+            }
+
+            .modal {
+                width: 90%;
+                max-width: 300px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            img {
+                width: 280px;
+            }
+
+            #btnSi {
+                transform: translateX(-140px);
+                top: 200px;
+            }
+
+            #btnNo {
+                transform: translateX(60px);
+                top: 200px;
+            }
+
+            .heart {
+                font-size: 24px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- CORAZONES -->
+<div id="hearts-bg"></div>
+
+<header>
+    <div>Would you like to be my jaina (gf)?</div>
+    <div>Atte: Alexis</div>
+    <div>Para: Andy &lt;3</div>
+</header>
+
+<div class="contenido">
+    <img src="imagen.png" alt="Imagen Linda">
+</div>
+
+<!-- Botones -->
+<input type="button" onclick="accionSi()" id="btnSi" value="Sí">
+<input type="button" id="btnNo" onmouseover="mueveElBoton()" value="No">
+
+<!-- Audios -->
+<audio id="clicSound" src="clic.mp3"></audio>
+<audio id="moverSound" src="mover.mp3"></audio>
+<audio id="burbujaSound" src="burbuja.mp3"></audio>
+
+<!-- Modal -->
+<div id="modalFondo" class="modal-bg">
+    <div class="modal">
+        <h2>Sabía que dirías que sí</h2>
+        <p>Tqm jijiji</p>
+        <button id="btnCerrarModal" onclick="cerrarModal()">Cerrar</button>
+    </div>
+</div>
+
+
+<script>
+
+/* ====== CORAZONES ====== */
+function generarCorazones() {
+    const contenedor = document.getElementById("hearts-bg");
+    const cantidad = 80;
+
+    for (let i = 0; i < cantidad; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "❤";
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.top  = Math.random() * 100 + "vh";
+        heart.style.animationDelay = (Math.random() * 3) + "s";
+
+        contenedor.appendChild(heart);
+    }
+}
+generarCorazones();
+
+/* BOTÓN SÍ */
+function accionSi(){
+    document.getElementById('clicSound').play();
+    document.getElementById('burbujaSound').play();
+    document.getElementById('modalFondo').style.display = "flex";
+}
+
+/* Cerrar modal */
+function cerrarModal(){
+    document.getElementById('clicSound').play();
+    document.getElementById('modalFondo').style.display = "none";
+}
+
+/* Botón NO - movimiento */
+function mueveElBoton(){
+    const sound = document.getElementById('moverSound');
+    sound.pause();
+    sound.currentTime = 0;
+    sound.play().catch(()=>{});
+
+    const btnNo = document.getElementById('btnNo');
+    const btnSi = document.getElementById('btnSi');
+    const headerHeight = document.querySelector("header").offsetHeight;
+
+    const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+    const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+    const minY = headerHeight + 20;
+
+    let newX, newY;
+    let safe = false;
+
+    while (!safe) {
+        newX = Math.random() * maxX;
+        newY = minY + Math.random() * (maxY - minY);
+
+        const siRect = btnSi.getBoundingClientRect();
+        const noRect = {
+            left: newX,
+            top: newY,
+            right: newX + btnNo.offsetWidth,
+            bottom: newY + btnNo.offsetHeight
+        };
+
+        const overlapping =
+            !(noRect.right < siRect.left ||
+              noRect.left > siRect.right ||
+              noRect.bottom < siRect.top ||
+              noRect.top > siRect.bottom);
+
+        if (!overlapping) safe = true;
+    }
+
+    btnNo.style.left = newX + "px";
+    btnNo.style.top = newY + "px";
+}
+
+/* DESBLOQUEO DE AUDIO */
+document.addEventListener("click", function unlockAudio() {
+    const audios = document.querySelectorAll("audio");
+    audios.forEach(a => {
+        a.play().then(() => {
+            a.pause();
+            a.currentTime = 0;
+        }).catch(() => {});
+    });
+    document.removeEventListener("click", unlockAudio);
+});
+
+</script>
+
+</body>
+</html>
