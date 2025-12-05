@@ -73,7 +73,6 @@
         }
 
         /* ====== BOTONES ROJOS ====== */
-
         #btnSi, #btnNo {
             padding: 15px 30px;
             border-radius: 30px;
@@ -86,6 +85,11 @@
             position: fixed;
             top: 220px;
             z-index: 20;
+
+            /* iPhone: quitar “presionado” feo */
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            touch-action: manipulation;
         }
 
         #btnSi:hover, #btnNo:hover {
@@ -147,9 +151,7 @@
         }
 
         /* ====== RESPONSIVE ====== */
-
         @media (max-width: 480px) {
-
             header {
                 font-size: 18px;
                 padding-bottom: 28px;
@@ -190,7 +192,6 @@
         }
 
         @media (max-width: 768px) {
-
             img {
                 width: 280px;
             }
@@ -228,7 +229,7 @@
 
 <!-- Botones -->
 <input type="button" onclick="accionSi()" id="btnSi" value="Sí">
-<!-- OJO: ya sin onmouseover, lo manejamos por JS -->
+<!-- SIN onmouseover -->
 <input type="button" id="btnNo" value="No">
 
 <!-- Audios -->
@@ -318,31 +319,45 @@ function mueveElBoton(){
         if (!overlapping) safe = true;
     }
 
-    // Quitamos el transform inicial para que las coordenadas sean reales
+    // Quitar transform inicial para que las coords sean reales
     btnNo.style.transform = 'none';
     btnNo.style.left = newX + "px";
     btnNo.style.top = newY + "px";
+
+    // Quitar estado "presionado" / enfoque en iPhone
+    btnNo.blur();
 }
 
-/* EVENTOS DEL BOTÓN NO (desktop + teléfono) */
+/* EVENTOS DEL BOTÓN NO */
 const btnNo = document.getElementById('btnNo');
 
-// Desktop: se mueve al pasar el mouse
-btnNo.addEventListener('mouseover', () => {
-    mueveElBoton();
-});
-
-// Móvil: se mueve en cada toque sin necesidad de tocar fuera
-btnNo.addEventListener('touchstart', function(e) {
-    e.preventDefault(); // evita que dispare también el click
+// iPhone / táctil: usar touchend para que sea un toque “normal”
+btnNo.addEventListener('touchend', function(e) {
+    e.preventDefault();
     mueveElBoton();
 }, { passive: false });
 
-// Por si acaso, también en click (desktop / algunos navegadores)
+// Desktop / fallback
 btnNo.addEventListener('click', function(e) {
     e.preventDefault();
     mueveElBoton();
 });
+
+/* DESBLOQUEO DE AUDIO (primer toque) */
+function unlockAudioOnce() {
+    const audios = document.querySelectorAll("audio");
+    audios.forEach(a => {
+        a.play().then(() => {
+            a.pause();
+            a.currentTime = 0;
+        }).catch(() => {});
+    });
+
+    document.removeEventListener("click", unlockAudioOnce);
+    document.removeEventListener("touchend", unlockAudioOnce);
+}
+document.addEventListener("click", unlockAudioOnce);
+document.addEventListener("touchend", unlockAudioOnce);
 </script>
 
 </body>
